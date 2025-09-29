@@ -9,6 +9,7 @@ class JobRecord:
     """
     job_id: str
     start_time: float
+    created_time: float
     end_time: float
     duration: float
     status: str
@@ -25,9 +26,7 @@ class ThreadSafePriorityQueue:
         self._queue = asyncio.PriorityQueue()
         self._counter = 0
         self._jobs: dict[str,Job] = {}
-
-        #Jobs in a
-        self._job_records: list[JobRecord] = []
+        self._job_records: list[JobRecord] = []     #Jobs terminated
     
     async def put(self, job: Job) -> None:
         """Add a job to the queue"""
@@ -57,6 +56,7 @@ class ThreadSafePriorityQueue:
                     job_id = job.id,
                     start_time = 0,
                     end_time = job.finished_at ,
+                    created_time=job.created_at,
                     duration = 0.00,
                     status = job.status.value,
                     priority = job.priority
@@ -75,6 +75,7 @@ class ThreadSafePriorityQueue:
             job_id = job.id,
             start_time = job.started_at,
             end_time = job.finished_at ,
+            created_time=job.created_at,
             duration = job.finished_at - job.started_at,
             status = job.status.value,
             priority = job.priority
