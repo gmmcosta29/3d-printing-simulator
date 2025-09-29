@@ -1,5 +1,20 @@
 from models import Job, JobStatus, PrioritizedJob
 import asyncio
+from dataclasses import dataclass
+
+@dataclass
+class JobRecord:
+    """
+    Lightweight record of a completed job, only has the data needed for logs
+    """
+    job_id: str
+    start_time: float
+    end_time: float
+    duration: float
+    status: str
+    priority: int
+
+    
 
 
 class ThreadSafePriorityQueue:
@@ -10,6 +25,9 @@ class ThreadSafePriorityQueue:
         self._queue = asyncio.PriorityQueue()
         self._counter = 0
         self._jobs: dict[str,Job] = {}
+
+        #Jobs in a
+        self._job_records: list[JobRecord] = []
     
     async def put(self, job: Job) -> None:
         """Add a job to the queue"""
@@ -24,9 +42,50 @@ class ThreadSafePriorityQueue:
     
     async def get(self) -> Job:
         """Get the highest priority job from the queue"""
-        prioritized = await self._queue.get()
-        return prioritized.job
+        while True:
+            prioritized = await self._queue.get()
+            job = prioritized.job
+            if job.status == JobStatus.QUEUE:
+                return job
     
+    def cancel_job(self, job_id: str) -> bool:
+        if job_id in self._jobs:
+            job = self._jobs[job_id]
+            if job.status == JobStatus.QUEUE:
+                job.cancel()
+                return True
+        return False
+    
+    def mark_completed(self,job: Job) -> None:
+        """
+        Complete a job and create a lightweight record to save memory
+        """
+        job.completed_processing()
+        record = JobRecord(
+            job_id = job.id,
+            start_time = job.started_at,
+            end_time = job.finished_at,
+            duration = job.finished_at - job.started_at,
+            status = JobStatus.COMPLETED,
+            priority = job.priority
+        )
+        self._job_records.append(record)
+    
+    async def clean_finished_jobs(self) -> None:
+        print("Start clean")    
+        finished_ids = [
+            job_id for job_id, job in self._jobs.items()
+            if job.status in [JobStatus.COMPLETED, JobStatus.CANCELED]
+        ]
+        for job_id in finished_ids:
+            del self._jobs[job_id]
+
+    async def periodic_cleanup(self, interval: float = 60.0) -> None:
+        while True:            
+            await self.clean_finished_jobs()
+            await asyncio.sleep(interval)
+
+
 if __name__ == "__main__":
     import asyncio
     import time
@@ -38,14 +97,16 @@ if __name__ == "__main__":
             Job("J1","PLA",10,2),
             Job("J2","PETG",10,1), 
             Job("J3","TPU",10,2),
-            Job("J4","ABS",10,0) # Highest priority
+            Job("J4","ABS",10,0), # Highest priority
+            Job("J5","ABS",10,2)
         ]
-
+        clean_task = asyncio.create_task(queue.periodic_cleanup(5))
         print("Adding Job")
         for job in jobs:
             await queue.put(job)
             print(f"Added Job {job.id} with priority {job.priority}")
 
+        queue.cancel_job("J5")
         while True:
             job = await queue.get()
             if job is None:
@@ -53,7 +114,7 @@ if __name__ == "__main__":
             print(f"Got Job {job.id} with the {job.priority} priority")
             job.start_processing()
             await asyncio.sleep(job.est_time / time_speedup)
-            job.completed_processing()
+            queue.mark_completed(job = job)
 
     asyncio.run(test_queue())
 

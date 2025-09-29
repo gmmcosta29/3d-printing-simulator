@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
 import time
-import asyncio
 from typing import Optional
 
 class JobStatus(Enum):
@@ -61,7 +60,7 @@ class Job:
     
     def completed_processing(self) -> None:
         """Job Completion"""
-        self.status: JobStatus.COMPLETED
+        self.status = JobStatus.COMPLETED
         self.finished_at = time.time()
     
     def cancel(self) -> None:
@@ -114,6 +113,8 @@ class Printer:
         job.completed_processing()
 
         self.total_busy_time += time.time() - self.start_job_time
+        self.current_job = None
+        return job
     
     def get_utilization(self, total_simulation_time: float) -> float:
         """ Calculate printer utilization"""
@@ -123,7 +124,7 @@ class Printer:
 
 if __name__ == "__main__":
     #Test Job creating and processing
-    time_speedup = 10.0
+    time_speedup = 100.0
     job = Job(
         id="test-job-1",
         est_time=120.0,
