@@ -53,6 +53,16 @@ class ThreadSafePriorityQueue:
             job = self._jobs[job_id]
             if job.status == JobStatus.QUEUE:
                 job.cancel()
+                record = JobRecord(
+                    job_id = job.id,
+                    start_time = 0,
+                    end_time = job.finished_at ,
+                    duration = 0.00,
+                    status = job.status.value,
+                    priority = job.priority
+                )
+                self._job_records.append(record)
+                del self._jobs[job_id]
                 return True
         return False
     
@@ -64,27 +74,15 @@ class ThreadSafePriorityQueue:
         record = JobRecord(
             job_id = job.id,
             start_time = job.started_at,
-            end_time = job.finished_at,
+            end_time = job.finished_at ,
             duration = job.finished_at - job.started_at,
-            status = JobStatus.COMPLETED,
+            status = job.status.value,
             priority = job.priority
         )
         self._job_records.append(record)
+        del self._jobs[job.id]
+
     
-    async def clean_finished_jobs(self) -> None:
-        print("Start clean")    
-        finished_ids = [
-            job_id for job_id, job in self._jobs.items()
-            if job.status in [JobStatus.COMPLETED, JobStatus.CANCELED]
-        ]
-        for job_id in finished_ids:
-            del self._jobs[job_id]
-
-    async def periodic_cleanup(self, interval: float = 60.0) -> None:
-        while True:            
-            await self.clean_finished_jobs()
-            await asyncio.sleep(interval)
-
 
 if __name__ == "__main__":
     import asyncio

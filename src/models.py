@@ -124,7 +124,7 @@ class Printer:
 
 if __name__ == "__main__":
     #Test Job creating and processing
-    time_speedup = 100.0
+    time_speedup = 0.01
     job = Job(
         id="test-job-1",
         est_time=120.0,
@@ -162,12 +162,12 @@ if __name__ == "__main__":
     print(f"Second Job: {jobs[1].job.id}, Priority: {jobs[1].job.priority}")
 
     printer.start_job(jobs[0].job)
-    time.sleep(jobs[0].job.est_time/time_speedup)
+    time.sleep(jobs[0].job.est_time * time_speedup)
     printer.finish_current_job()
 
     printer.start_job(jobs[1].job)
     print(f"Printing status: {printer.is_busy}")
-    time.sleep(jobs[1].job.est_time/time_speedup)
+    time.sleep(jobs[1].job.est_time * time_speedup)
     printer.finish_current_job()
     
     total_sim_time = time.time() - start_sim
