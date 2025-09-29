@@ -98,7 +98,6 @@ if __name__ == "__main__":
             Job("J4","ABS",10,0), # Highest priority
             Job("J5","ABS",10,2)
         ]
-        clean_task = asyncio.create_task(queue.periodic_cleanup(5))
         print("Adding Job")
         for job in jobs:
             await queue.put(job)
