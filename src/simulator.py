@@ -20,6 +20,10 @@ class Simulator:
         return len(self._printers)
     
     @property
+    def time_scale(self) -> float:
+        return self._time_scale
+    
+    @property
     def printers(self) -> list[Printer]:
         return self._printers.copy()
     
@@ -35,7 +39,16 @@ class Simulator:
         """Return Jobs that are completed/canceled"""
         return self._queue._job_records.copy()
     
-    def get_stats(self) -> dict:
+    def get_queue_stats(self) -> dict:
+        records = self._queue._job_records
+        return{
+            "active_jobs": len(self._queue._jobs),
+            "completed": sum(1 for r in records if r.status == "completed"),
+            "canceled": sum(1 for r in records if r.status == "canceled"),
+            "total_processed": len(records)
+        }
+    
+    def get_global_stats(self) -> dict:
         """Final statistics"""
         total_sim_time = time.time() - self._start_time
         records = self._queue._job_records
@@ -47,21 +60,24 @@ class Simulator:
                 wait = r.start_time - r.created_time
                 wait_times.append(wait)
 
-        avg_wait = sum(wait_times) / len(wait_times)
 
         if wait_times:
             sorted_wait = sorted(wait_times)
             size = len(sorted_wait)
+            avg_wait = sum(wait_times) / len(wait_times)
             if size % 2 == 0:
-                median_wait = (sorted_wait[size//2 -1] - sorted_wait[size//2])/2
+                median_wait = (sorted_wait[size//2 -1] + sorted_wait[size//2])/2
             else:
                 median_wait = sorted_wait[size//2]
-
-        total_jobs_completed = len(completed)
-        if total_sim_time != 0:
-            troughtput = total_jobs_completed / total_sim_time
         else:
-            troughtput = 0.0
+            median_wait = 0.0
+            avg_wait = 0.0
+
+        total_completed = len(completed)
+        if total_sim_time != 0:
+            throughput = total_completed / total_sim_time
+        else:
+            throughput = 0.0
         
         #printer utilization
         printer_utilization = []
@@ -74,10 +90,10 @@ class Simulator:
         return {
             "avg_wait_time": avg_wait,
             "median_wait_time":median_wait,
-            "troughtput":troughtput,
+            "throughput":throughput,
             "printer_utilization": printer_utilization,
             "total_simulation_time": total_sim_time,
-            "total_jobs_completed": total_jobs_completed
+            "total_completed": total_completed
         }
     
     async def add_job(self, job: Job) -> None:
