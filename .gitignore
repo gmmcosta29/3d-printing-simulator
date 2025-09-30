@@ -1,16 +1,17 @@
 
 # Python src cache
-src/__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
 
 # Python test cache
-test/__pycache__/
-*.py[cod]
-*$py.class
-*.so
+.pytest_cache/
+.coverage
 
 # logs
 logs/
 *.logs
+
+#Database
+*.db
