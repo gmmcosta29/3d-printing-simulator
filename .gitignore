@@ -1,5 +1,4 @@
-src/__pycache__/*
-src/simulator.py
+
 # Python src cache
 src/__pycache__/
 *.py[cod]
