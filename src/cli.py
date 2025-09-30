@@ -100,7 +100,6 @@ class CLI:
         print("=" * 60 + "\n")
         for p in stats['printer_utilization']:
             print(f"Printer {p['printer_id']}: {p['utilization_percent']} %")
-        
         print("="*60 + "\n")
     
     def cmd_status(self) -> None:
