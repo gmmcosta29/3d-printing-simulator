@@ -34,7 +34,7 @@ class CLI:
             estimate_time = float(args[2])
             priority = int(args[3])
             
-            job = Job(job_id = job_id, material=material, est_time= estimate_time, priority=priority)
+            job = Job(id = job_id, material=material, est_time= estimate_time, priority=priority)
             await self.sim.add_job(job = job)
 
             print(f"Added Job {job_id}: {material}, {estimate_time}s with {priority} priority")
@@ -46,6 +46,7 @@ class CLI:
 
         print("\n Jobs in Queue: ")
         records = self.sim.get_job_records()
+        records = sorted(records, key=lambda r:r.finished_at)
         if not records:
             return
         print("\nJob Records: ")
@@ -141,7 +142,7 @@ class CLI:
                     self.cmd_cancel(args)
                 elif cmd == "status":
                     self.cmd_status()
-                elif cmd == "records":
+                elif cmd == "stats":
                     self.cmd_records()
                 elif cmd == "help":
                     self.cmd_help()

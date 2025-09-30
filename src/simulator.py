@@ -2,6 +2,17 @@ import asyncio
 import time
 from models import Job, Printer
 from queue_manager import ThreadSafePriorityQueue
+import logging
+from pathlib import Path
+
+log_dir = Path(__file__).parent.parent / "logs"
+log_dir.mkdir(exist_ok=True)
+logging.basicConfig(
+    filename= log_dir /'simulation.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s'
+)
+
 
 class Simulator:
     """
@@ -117,31 +128,37 @@ class Simulator:
                     timeout=1.0
                 )
                 printer.start_job(job)
+                logging.info(f"Printer {printer.id} started the job {job.id}")
                 await asyncio.sleep(job.est_time * self._time_scale)
                 printer.finish_current_job()
                 self._queue.mark_completed(job)
-                print(f"Printer {printer.id} completed the job{job.id}")
+                logging.info(f"Printer {printer.id} completed the job {job.id}")
 
             except asyncio.TimeoutError:
                 continue
             except Exception as e:
+                logging.info(f"Printer {printer.id} as the  error:{e}")
                 print(f"Printer {printer.id} as the  error:{e}")
+
+        logging.info(f"Printer {printer.id} stopped")
         print(f"Printer {printer.id} stopped")
-    
+
     async def start(self) -> None:
         """Main routine that starts all the coroutines"""
         self._running = True
         self._start_time = time.time()
+        logging.info("Simulation started")
         for printer in self._printers:
             task = asyncio.create_task(self.run_printer(printer=printer))
             self._workers_tasks.append(task)
-        print(f"Started {len(self._printers)} printer workers")
+        logging.info(f"Started {len(self._printers)} printer workers")
 
     async def stop(self) -> None:
         """Stops all the workers safely"""
         self._running = False
         await asyncio.gather(*self._workers_tasks, return_exceptions=True) # Waits for all threads even if they raise exceptions
         print("All workers stoped")
+        logging.info("All workers stoped")
 
 async def basic_test():
 
