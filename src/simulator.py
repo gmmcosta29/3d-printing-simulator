@@ -5,6 +5,7 @@ from queue_manager import ThreadSafePriorityQueue
 import logging
 from pathlib import Path
 from database import JobDatabase
+from visualizer import Visualizer
 
 log_dir = Path(__file__).parent.parent / "logs"
 log_dir.mkdir(exist_ok=True)
@@ -163,9 +164,11 @@ class Simulator:
         logging.info("All workers stoped")
         
         records = self._queue.get_job_records()
+        stats = self.get_global_stats()
         sim_time = time.time() - self._start_time
         logging.info(f"Saved {self._db.save_jobs(records=records, simulation_time=sim_time)} jobs to the database")
-
+        plt = Visualizer()
+        plt.plot_printer_utilization(stats=stats)
 
 async def basic_test():
 
