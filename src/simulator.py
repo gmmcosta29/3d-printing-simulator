@@ -4,6 +4,7 @@ from models import Job, Printer
 from queue_manager import ThreadSafePriorityQueue
 import logging
 from pathlib import Path
+from database import JobDatabase
 
 log_dir = Path(__file__).parent.parent / "logs"
 log_dir.mkdir(exist_ok=True)
@@ -25,6 +26,7 @@ class Simulator:
         self._queue = ThreadSafePriorityQueue()
         self._running = False
         self._workers_tasks = []
+        self._db = JobDatabase()
 
     @property
     def num_printers(self) -> int:
@@ -42,18 +44,18 @@ class Simulator:
         """Cancel job by name """
         return self._queue.cancel_job(job_id=job_id)
     
-    def get_active_jobs(self) -> list[Job]:
+    def get_active_jobss(self) -> list[Job]:
         """Returns a list of the active jobs"""
-        return list(self._queue._jobs.values())
+        return list(self._queue.get_active_jobs().values())
     
     def get_job_records(self) -> list[Job]:
         """Return Jobs that are completed/canceled"""
-        return self._queue._job_records.copy()
+        return self._queue.get_job_records()
     
     def get_queue_stats(self) -> dict:
-        records = self._queue._job_records
+        records = self._queue.get_job_records()
         return{
-            "active_jobs": len(self._queue._jobs),
+            "active_jobs": len(self._queue.get_active_jobs()),
             "completed": sum(1 for r in records if r.status == "completed"),
             "canceled": sum(1 for r in records if r.status == "canceled"),
             "total_processed": len(records)
@@ -62,7 +64,7 @@ class Simulator:
     def get_global_stats(self) -> dict:
         """Final statistics"""
         total_sim_time = time.time() - self._start_time
-        records = self._queue._job_records
+        records = self._queue.get_job_records()
         completed = [r for r in records if r.status == "completed"]
 
         wait_times = []
@@ -159,6 +161,11 @@ class Simulator:
         await asyncio.gather(*self._workers_tasks, return_exceptions=True) # Waits for all threads even if they raise exceptions
         print("All workers stoped")
         logging.info("All workers stoped")
+        
+        records = self._queue.get_job_records()
+        sim_time = time.time() - self._start_time
+        logging.info(f"Saved {self._db.save_jobs(records=records, simulation_time=sim_time)} jobs to the database")
+
 
 async def basic_test():
 
@@ -174,7 +181,7 @@ async def basic_test():
     sim._queue.cancel_job("J3")
     #await sim.run(job_count=4)
 
-    print(f" Job record {sim._queue._job_records}")
+    print(f" Job record {sim._queue.get_job_records()}")
 
 if __name__ == "__main__":
     asyncio.run(basic_test())

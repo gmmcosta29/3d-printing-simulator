@@ -46,7 +46,7 @@ class CLI:
 
         print("\n Jobs in Queue: ")
         records = self.sim.get_job_records()
-        records = sorted(records, key=lambda r:r.finished_at)
+        records = sorted(records, key=lambda r:r.end_time)
         if not records:
             return
         print("\nJob Records: ")

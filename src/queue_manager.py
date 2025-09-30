@@ -46,8 +46,17 @@ class ThreadSafePriorityQueue:
             job = prioritized.job
             if job.status == JobStatus.QUEUE:
                 return job
+                                
+    def get_job_records(self) -> list[Job]:
+        """Get for completed jobs"""
+        return self._job_records.copy()
+    
+    def get_active_jobs(self) -> dict[str,Job]:
+        """Get for queue jobs"""
+        return self._jobs.copy()
     
     def cancel_job(self, job_id: str) -> bool:
+        """Cancel a job and update data objects"""
         if job_id in self._jobs:
             job = self._jobs[job_id]
             if job.status == JobStatus.QUEUE:

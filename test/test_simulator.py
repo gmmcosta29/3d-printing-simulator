@@ -75,14 +75,14 @@ async def test_cancel_already_cancelled(one_printer_sim):
 
 @pytest.mark.asyncio
 async def test_load_balancing():
-    """"""
+    """Test: balancing a load for 3 printers"""
     sim = Simulator(num_printers=3, time_scale=0.1)
     
     jobs = [Job(f"J{i}", "PLA", 10, priority=1) for i in range(12)]
 
     await sim.start()
     await sim.add_jobs(jobs)
-    await asyncio.sleep(4.5) #12 jobs * 0.1 (time_scale) / 3 (printers)  = 4s + .5 tolerance 
+    await asyncio.sleep(4.5) #12 jobs * 10 sec * 0.1 (time_scale) / 3 (printers)  = 4s + .5 tolerance 
     await sim.stop()
 
     stats = sim.get_global_stats()
@@ -105,7 +105,7 @@ async def test_mixed_priorities(two_printer_sim):
         Job("J4", "ABS", 10, priority=1)
     ]
     await sim.add_jobs(jobs)
-    await asyncio.sleep(4.5) # 4 jobs * 0.1 (time_scale) / 2 (printers)  = 2s + .5 tolerance
+    await asyncio.sleep(4.5) # 4 jobs  * 10 sec * 0.1 (time_scale) / 2 (printers)  = 2s + .5 tolerance
     
     records = sorted(sim.get_job_records(), key=lambda x: x.end_time)
 
@@ -146,3 +146,19 @@ async def test_stats_no_jobs(one_printer_sim):
 
     utilization = [p['utilization_percent'] for p  in stats['printer_utilization']]
     assert(all(u == 0 for u in utilization))
+
+@pytest.mark.asyncio
+async def test_bulk_processing():
+    """Test: Simulator in bulk """
+    sim = Simulator(num_printers=3, time_scale=0.01)
+    
+    jobs = [Job(f"J{i}", "PLA", 10, priority=1) for i in range(3000)]
+
+    await sim.start()
+    await sim.add_jobs(jobs)
+    await asyncio.sleep(102) #3000 jobs * 10s * 0.01 (time_scale) / 3 (printers)  = 100s + 2 sec tolerance 
+    await sim.stop()
+    
+    stats = sim.get_global_stats()
+    print(stats)
+    assert stats['total_completed'] == 3000
