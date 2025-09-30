@@ -1,1 +1,17 @@
 src/__pycache__/*
+src/simulator.py
+# Python src cache
+src/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python test cache
+test/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# logs
+logs/
+*.logs
