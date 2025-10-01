@@ -9,9 +9,9 @@ pip install -r requirements.txt
 # Time scale
 The time_scale parameter accelerates simulation:
 
-time_scale=1.0 -> Real-time (10s job takes 10s)
-time_scale=0.1 -> 10x faster (10s job takes 1s)
-time_scale=0.01 -> 100x faster (10s job takes 0.1s)
+time_scale=1.0 -> Real-time (10s job takes 10s). 
+time_scale=0.1 -> 10x faster (10s job takes 1s). 
+time_scale=0.01 -> 100x faster (10s job takes 0.1s). 
 
 Default: 0.1 in CLI, 0.01 in tests
 
@@ -20,10 +20,10 @@ Default: 0.1 in CLI, 0.01 in tests
 ## JobStatus
 Job lifecycle states:
 
-QUEUE - Waiting to be processed
-RUNNING - Currently being printed
-COMPLETED - Successfully finished
-CANCELED - Cancelled before completion
+QUEUE - Waiting to be processed. 
+RUNNING - Currently being printed. 
+COMPLETED - Successfully finished. 
+CANCELED - Cancelled before completion. 
 
 ## Job
 Represents a 3D printing job, is utilized for each job that is created
@@ -40,7 +40,7 @@ Represents a 3D printing job, is utilized for each job that is created
 ## PrioritizedJob 
 Wrapper class to ordering jobs by priority
 
-This ensures stable ordering
+This ensures stable ordering. 
     1 - Priority
     2 - FIFO Counter (When the job was inserted in the FIFO list)
 
@@ -78,15 +78,15 @@ python src/cli.py
 ## Simulator processing a testcase, the simulation will continue in real time
 python src/cli.py --input test_data/sample_jobs.json --printers --time-scale 0.01
 
-# CLI COMMANDS
-add <id> <material> <time> <priority> - Add a job
-list - List all jobs in queue
-completed - List all completed jobs
-cancel <job_id> - Cancel a job
-status - Shows simulator status
-stats - Shows global summary
-help - Shows help
-stop - Stops the simulator and exits
+# Cli Commands
+add <id> <material> <time> <priority> - Add a job. 
+list - List all jobs in queue. 
+completed - List all completed jobs. 
+cancel <job_id> - Cancel a job. 
+status - Shows simulator status. 
+stats - Shows global summary. 
+help - Shows help. 
+stop - Stops the simulator and exits. 
 
 # Testings
 
