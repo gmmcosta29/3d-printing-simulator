@@ -169,6 +169,7 @@ async def main():
             description='3D Printing Queue Simulator',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog=""""
+    Examples:
             python src/cli.py
             python src/cli.py --input test_data/sample_input.json
             python src/cli.py --input test_data/sample_input.json --printers 3 --time-scale 0.01

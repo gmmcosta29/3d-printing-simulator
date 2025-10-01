@@ -1,6 +1,9 @@
 # 3D Printing Simulator
 
 # Requirements
+Python 3.9+
+pip
+pytest
 
 ## Install requirements:
 pip install -r requirements.txt
@@ -83,8 +86,11 @@ Create an image of each printer utilization
 ## Simulator in Real Time
 python src/cli.py
 
-## Simulator processing a testcase, the simulation will continue in real time
-python src/cli.py --input test_data/sample_jobs.json --printers --time-scale 0.01
+# SImulator with a Test Case
+python src/cli.py --input test_data/sample_jobs.json
+
+## Simulator processing a testcase, with a costum configuration
+python src/cli.py --input test_data/sample_jobs.json --printers 3 --time-scale 0.01
 
 # Cli Commands
 - add <id> <material> <time> <priority> - Add a job. 
@@ -98,7 +104,7 @@ python src/cli.py --input test_data/sample_jobs.json --printers --time-scale 0.0
 
 # Testings
 
-## Create Random Sample textes (This will create a randomized test case with 10 jobs) in /test_data 
+## Create Random Sample text (This will create a randomized test case with 10 jobs) in /test_data 
 python scripts/create_test_case.py 
 
 ## Run all tests
