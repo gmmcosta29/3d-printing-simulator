@@ -44,6 +44,8 @@ class ThreadSafePriorityQueue:
         """Cancel a job and update data objects"""
         if job_id in self._jobs:
             job = self._jobs[job_id]
+            if job.status == JobStatus.RUNNING:
+                return False
             if job.status == JobStatus.QUEUE:
                 job.cancel()
                 record = JobRecord(

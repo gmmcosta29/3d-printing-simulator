@@ -76,7 +76,7 @@ async def test_cancel_already_cancelled(one_printer_sim):
 
 @pytest.mark.asyncio
 async def test_load_balancing():
-    """Test: balancing a load for 3 printers"""
+    """Test: balancing a load for 3 printers and FIFO order"""
     sim = Simulator(num_printers=3, time_scale=0.1)
     
     jobs = [Job(f"J{i}", "PLA", 10, priority=1) for i in range(12)]
@@ -182,6 +182,32 @@ async def test_random_json_casetest(two_printer_sim):
     assert len(sim.get_job_records()) == 10
 
 
+@pytest.mark.asyncio
+async def test_cancelation(two_printer_sim):
+    """ Test:  Job cancelation changes them from active jobs to records """
+    sim = two_printer_sim
 
+    jobs = [
+        Job("J1", "PLA", 10, priority=2),
+        Job("J2", "PETG", 10, priority=2),
+        Job("J3", "TPU", 10, priority=0),
+        Job("J4", "ABS", 10, priority=1)
+    ]
+
+    await sim.add_jobs(jobs)
+
+    sucess = sim.cancel_job("J2")
+    assert sucess == True
+
+    active = sim.get_active_jobs()
+    
+    active_ids = [j.id for j in active]
+
+    records = sim.get_job_records()
+    record_ids = [r.job_id for r in records]
+
+    assert "J2" not in active_ids
+    assert "J2" in record_ids
+    assert len([r for r in records if r.status == "canceled"]) == 1
 
 
