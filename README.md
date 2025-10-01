@@ -55,6 +55,13 @@ Represents a 3D Printer
 
 ## Job Record
 Lightweight record of a completed job, only has the data needed for logs
+    job_id: Unique job identifier
+    start_time: Timestamp of job initialization 
+    created_time: Timestamp of creation
+    end_time: Timestamp of job completion
+    duration: Diference betwen end_time and start time
+    status: Job end status
+    priority: Job priority
 
 # Source Files
 
@@ -99,3 +106,11 @@ pytest -q
 
 ## Run a specific test 
 pytest test/simulator.py::test_load_balancing
+
+
+# OUTPUT
+After simulation, files are saved on:
+- job_history.db - SQLite database
+- job_report_YYYYMMDD_HHMMSS.json - JSON report
+- printer_utilization_YYYYMMDD_HHMMSS.png - Printer utilization chart
+- simulation.log - Event Log

@@ -130,13 +130,13 @@ class JobRecord:
     """
     Lightweight record of a completed job, only has the data needed for logs
     """
-    job_id: str
-    start_time: float
-    created_time: float
-    end_time: float
-    duration: float
-    status: str
-    priority: int
+    job_id: str #Unique job identifier
+    start_time: float # Timestamp of job initialization 
+    created_time: float # Timestamp of creation
+    end_time: float # Timestamp of job completion
+    duration: float # Diference betwen end_time and start time
+    status: str # Job end status
+    priority: int # Job priority
 
 if __name__ == "__main__":
     #Test Job creating and processing
