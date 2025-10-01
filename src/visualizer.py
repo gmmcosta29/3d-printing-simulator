@@ -6,7 +6,7 @@ class Visualizer:
 
     def __init__(self, dir: str = "logs"):
         self.output_dir = Path(dir)
-        self.output_dir.parent.mkdir(exist_ok=True)
+        self.output_dir.mkdir(exist_ok=True)
         
     def plot_printer_utilization(self, stats: dict) -> None:
         """Plot printer utilization"""

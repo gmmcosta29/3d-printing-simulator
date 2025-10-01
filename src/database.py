@@ -10,7 +10,8 @@ class JobDatabase:
         self.db_path.parent.mkdir(exist_ok=True)
         self.init_db()
 
-    def init_db(self):
+    def init_db(self) -> None:
+        """Checks if database exists"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
