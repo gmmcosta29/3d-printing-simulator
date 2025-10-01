@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel, Field
+from pathlib import Path
 import asyncio
 from contextlib import asynccontextmanager
 from typing import Optional
@@ -122,5 +123,5 @@ async def cancel_job(job_id: str):
         logging.info(f"Error: Canceling {job_id} ")
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
-    logging.info(f"Job {job_data.id} canceled successfully")
+    logging.info(f"Job {job_id} canceled successfully")
     return {"message": f"Job {job_id} cancelled"}
