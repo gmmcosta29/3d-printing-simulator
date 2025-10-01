@@ -66,12 +66,17 @@ Default: 0.1 in CLI, 0.1 in tests
 
 # Project Structure
 
-- **cli.py**  -> Command Line Interface that manages the entire application
-- **database.py** -> Class that manages persistence storage using SQLite3
-- **json_manager.py** -> File that has methods such as generate final processing report and reads from json file and export a list of jobs
-- **models.py** -> Dataclasses of Job, JobStatus, PrioritizedJob and Printer
-- **queue_manager.py** -> Thread-Safe queue for all jobs in
-- **visualizer.py** Create an image of each printer utilization
+## SRC
+- **api.py**            -> FastAPI REST endpoints with lifespan management
+- **database.py**       -> Class that manages persistence storage using SQLite3
+- **cli.py**            -> Command Line Interface that manages the entire application
+- **simulator.py**      -> Core async engine with worker pool pattern
+- **queue_manager.py**  -> Thread-Safe queue for all jobs in
+- **json_manager.py**   -> File that has methods such as generate final processing report and reads from json file and export a list of jobs
+- **models.py**         -> Dataclasses of Job, JobStatus, PrioritizedJob and Printer
+- **visualizer.py**     ->Create an image of each printer utilization
+
+
 
 # CLI Commands
 - add <id> <material> <time> <priority>     - Add a job
