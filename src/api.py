@@ -5,6 +5,15 @@ from contextlib import asynccontextmanager
 from typing import Optional
 from simulator import Simulator
 from models import Job
+import logging
+
+log_dir = Path(__file__).parent.parent / "logs"
+log_dir.mkdir(exist_ok=True)
+logging.basicConfig(
+    filename= log_dir /'simulation.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s'
+)
 
 class JobCreate(BaseModel):
     id: str
@@ -43,6 +52,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+#create a new job
 @app.post("/jobs", response_model=JobResponse, status_code=201)
 async def create_job(job_data: JobCreate):
     try:
@@ -53,6 +63,7 @@ async def create_job(job_data: JobCreate):
             priority=job_data.priority
         )
         await sim.add_job(job)
+        logging.info(f"Job {job_data.id} created successfully")
         return JobResponse(
             id=job.id,
             material=job.material,
@@ -61,8 +72,10 @@ async def create_job(job_data: JobCreate):
             status=job.status.value
         )
     except ValueError as e:
+        logging.info(f"Error: Create job {job_data.id}, with error:{e}")
         raise HTTPException(status_code=400, detail=str(e))
-    
+
+#list all the jobs in queue    
 @app.get("/jobs", response_model=list[JobResponse], status_code=200)
 async def list_jobs():
     jobs = sim.get_active_jobs()
@@ -70,8 +83,44 @@ async def list_jobs():
         JobResponse(
             id=j.id,
             material=j.material,
+            est_time=j.est_time,
             priority=j.priority,
             status=j.status.value
         )
         for j in jobs
     ]
+
+#get global stats
+@app.get("/stats", response_model=StatsResponse, status_code=200)
+async def list_stats():
+    stats = sim.get_global_stats()
+    return StatsResponse(
+            avg_wait_time=stats['avg_wait_time'],
+            median_wait_time=stats['median_wait_time'],
+            throughput=stats['throughput'],
+            total_completed=stats['total_completed']
+        )
+
+#get queue status
+@app.get("/health")
+async def health():
+    stats = sim.get_queue_stats()
+    return {
+        "status": "healthy",
+        "printers": sim.num_printers,
+        "active_jobs": stats['active_jobs'],
+        "completed": stats['completed'],
+        "canceled": stats['canceled'],
+        "total_processed": stats['total_processed']
+    }
+
+#cancel a job
+@app.delete("/jobs/{job_id}")
+async def cancel_job(job_id: str):
+    success = sim.cancel_job(job_id)
+    if not success:
+        logging.info(f"Error: Canceling {job_id} ")
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
+    logging.info(f"Job {job_data.id} canceled successfully")
+    return {"message": f"Job {job_id} cancelled"}
