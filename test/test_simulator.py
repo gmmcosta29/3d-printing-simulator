@@ -196,8 +196,8 @@ async def test_cancelation(two_printer_sim):
 
     await sim.add_jobs(jobs)
 
-    sucess = sim.cancel_job("J2")
-    assert sucess == True
+    success = sim.cancel_job("J2")
+    assert success == True
 
     active = sim.get_active_jobs()
     

@@ -82,9 +82,9 @@ class CLI:
             print("Usage: cancel <job_id>")
             return
         
-        sucess = self.sim.cancel_job(args[0])
-        if sucess:
-            print(f"Sucess canceling the job {args[0]}")
+        success = self.sim.cancel_job(args[0])
+        if success:
+            print(f"Success canceling the job {args[0]}")
         else:
             print(f"Was not possible to cancel {args[0]}")
 

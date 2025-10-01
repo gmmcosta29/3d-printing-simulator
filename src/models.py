@@ -110,7 +110,7 @@ class Printer:
         job.start_processing()
     
     def finish_current_job(self) -> Optional[Job]:
-        """ Complete a printing job sucessfully"""
+        """ Complete a printing job successfully"""
         job = self.current_job
         job.completed_processing()
 
