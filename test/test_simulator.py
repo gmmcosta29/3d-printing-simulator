@@ -155,7 +155,7 @@ async def test_stats_no_jobs(one_printer_sim):
 @pytest.mark.asyncio
 async def test_bulk_processing():
     """Test: Simulator in bulk """
-    sim = Simulator(num_printers=3, time_scale=0.1)
+    sim = Simulator(num_printers=3, time_scale=0.01)
     
     jobs = [Job(f"J{i}", "PLA", 10, priority=1) for i in range(3000)]
 
@@ -211,3 +211,9 @@ async def test_cancelation(two_printer_sim):
     assert len([r for r in records if r.status == "canceled"]) == 1
 
 
+@pytest.mark.asyncio
+async def test_json_error_handling():
+    """Test: JSON loading handles errors"""
+
+    jobs = load_jobs_from_json("test.json")
+    assert jobs == []
