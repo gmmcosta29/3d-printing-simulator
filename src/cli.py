@@ -1,7 +1,8 @@
 import asyncio
+import argparse
+import sys
 from models import Job
 from simulator import Simulator
-import sys
 from json_manager import load_jobs_from_json
 
 class CLI:
@@ -164,11 +165,40 @@ class CLI:
 async def main():
     if len(sys.argv) > 1:
         """Process json file only"""
-        json_file = sys.argv[1]
-        sim = Simulator(num_printers=3, time_scale=0.1)
+        parser = argparse.ArgumentParser(
+            description='3D Printing Queue Simulator',
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog=""""
+            python src/cli.py
+            python src/cli.py --input test_data/sample_input.json
+            python src/cli.py --input test_data/sample_input.json --printers 3 --time-scale 0.01
+            """
+        )
+        parser.add_argument(
+            '--input', '-i',
+            type=str,
+            help='Json file with jobs to process'
+        )
+        
+        parser.add_argument(
+            '--printers', '-p',
+            type=int,
+            default=2,
+            help='Number of printers(default: 2)'
+        )
+        
+        parser.add_argument(
+            '--time-scale', '-t',
+            type=float,
+            default=0.1,
+            help='Time scale multiplier (default:0.1)'
+        )
+        args = parser.parse_args()
+        
+        sim = Simulator(num_printers=args.printers, time_scale=args.time_scale)
         await sim.start()
 
-        jobs = load_jobs_from_json(json_file)
+        jobs = load_jobs_from_json(args.input)
         if jobs:
             await sim.add_jobs(jobs)
             print(f"Simulator running with {sim.num_printers} printers")
