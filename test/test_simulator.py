@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from models import Job
 from simulator import Simulator
+from json_manager import load_jobs_from_json
 
 #Tests will folow a 10%
 
@@ -162,3 +163,16 @@ async def test_bulk_processing():
     stats = sim.get_global_stats()
     print(stats)
     assert stats['total_completed'] == 3000
+
+    
+@pytest.mark.asyncio
+async def test_random_json_casetest(two_printer_sim):
+    """Test: Random generated casetest"""
+    sim = two_printer_sim
+
+    jobs = load_jobs_from_json('test_data/job_report_20251001_132759.json')
+
+    await sim.add_jobs(jobs) 
+    await asyncio.sleep(14.5) #264 total_time * 0.1 (time_scale) / 2  (printers)  = 13,2s + 1,3s tolerance
+
+    assert len(sim.get_job_records()) == 10

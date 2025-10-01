@@ -44,9 +44,9 @@ class CLI:
             print(f"Error: {e}")
     
     def cmd_completed(self) -> None:
-        """Print all the jobs completed"""
+        """Print all the jobs Completed/Canceled"""
 
-        print("\n Jobs in Queue: ")
+        print("\n Completed/Canceled jobs: ")
         records = self.sim.get_job_records()
         records = sorted(records, key=lambda r:r.end_time)
         if not records:
@@ -55,7 +55,9 @@ class CLI:
         print(f"ID      Priority        Duration        Status      Wait Time       RunTime")
         print("-" * 80)
         for record in records:
-            print(f"{record.job_id}     {record.priority}       {record.duration:.3f}       {record.status}     {(record.start_time-record.created_time):.3f}      {(record.end_time -record.start_time):.3f}")
+            endtime = (record.start_time - record.created_time) if record.start_time > 0 else 0
+            runttime = (record.end_time - record.start_time) if record.start_time > 0 else 0
+            print(f"{record.job_id}     {record.priority}       {record.duration:.3f}       {record.status}     {endtime:.3f}      {runttime:.3f}")
         print()
         print("-" * 80)
 
@@ -64,6 +66,7 @@ class CLI:
         print("\n Jobs in Queue: ")
         active_jobs = self.sim.get_active_jobs()
         if not active_jobs:
+            print("\n No jobs in queue")
             return
         print("\nJob Records: ")
         print(f"ID      Material        Estimated Time        Status")

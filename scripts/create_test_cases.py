@@ -24,7 +24,7 @@ def main():
     data = {"jobs": jobs}
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"job_report_{timestamp}.json"
+    filename = f"test_case_report_{timestamp}.json"
 
     dirpath = Path("test_data")
     dirpath.mkdir(exist_ok=True)

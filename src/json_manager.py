@@ -16,21 +16,22 @@ def generate_json_report(records: list[JobRecord]) -> None:
             {
                 "job_id": r.job_id,
                 "status": r.status,
-                "started at": r.start_time if r.start_time > 0 else None,
-                "finised_at": r.end_time
+                "started_at": r.start_time if r.start_time > 0 else None,
+                "finished_at": r.end_time
             }
             for r in records
         ]
     }
     with open(filepath,'w', encoding='utf-8') as f:
-        json.dump(records,f,default=lambda o:o.__dict__, indent=4)
+        json.dump(report,f,default=lambda o:o.__dict__, indent=4)
 
 def load_jobs_from_json(filepath: str) -> list[Job]:
     try:
         path = Path(filepath)
         if not path.exists():
             print(f"Error: File {filepath} not found")
-            return None
+            return []
+        
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
@@ -38,7 +39,7 @@ def load_jobs_from_json(filepath: str) -> list[Job]:
         
         if not jobs_data:
             print(f"Warning: No Jobs found in {filepath}")
-            return None
+            return []
         
         jobs = []
         for job in jobs_data:
@@ -52,6 +53,7 @@ def load_jobs_from_json(filepath: str) -> list[Job]:
         return jobs
     except json.JSONDecodeError as e:
         print(f"Error: Invalid JSON in {filepath}: {e}")
+        return []
     except Exception as e:
         print(f"Error: loading jobs: {e}")
         return []

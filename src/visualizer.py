@@ -26,7 +26,7 @@ class Visualizer:
         plt.tight_layout()
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filepath = self.output_dir / f"printer_utilization{timestamp}.png"
+        filepath = self.output_dir / f"printer_utilization_{timestamp}.png"
         
         plt.savefig(filepath,dpi = 150, bbox_inches= 'tight')
         plt.close()

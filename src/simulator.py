@@ -165,15 +165,15 @@ class Simulator:
         logging.info("All workers stoped")
         
         records = self._queue.get_job_records()
-        sorted(records, key=lambda r: r.end_time) #sort records by the order they were concluded
+        sorted_records = sorted(records, key=lambda r: r.end_time) #sort records by the order they were concluded
         
         stats = self.get_global_stats()
-        jobs_on_db = self._db.save_jobs(records=records, simulation_time=stats['total_simulation_time'])
+        jobs_on_db = self._db.save_jobs(records=sorted_records, simulation_time=stats['total_simulation_time'])
         logging.info(f"Saved {jobs_on_db} jobs to the database")
 
         plt = Visualizer()
         plt.plot_printer_utilization(stats=stats)
-        generate_json_report(records=records)
+        generate_json_report(records=sorted_records)
 
 async def basic_test():
 
