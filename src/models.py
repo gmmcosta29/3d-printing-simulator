@@ -4,7 +4,7 @@ import time
 from typing import Optional
 
 class JobStatus(Enum):
-    "Represents the diferent states of each job"
+    "Represents the different states of each job"
     QUEUE = "queue"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -54,7 +54,7 @@ class Job:
             return self.finished_at - self.started_at
 
     def start_processing(self) -> None:
-        """Begining of the Job"""
+        """Beginning of the Job"""
         self.status = JobStatus.RUNNING
         self.started_at = time.time()
     

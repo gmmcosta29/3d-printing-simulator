@@ -12,9 +12,9 @@ class CLI:
     
     def cmd_help(self):
         """
-        Print avaliable commands
+        Print available commands
         """
-        print("Avaliable commands")
+        print("Available commands")
         print(" add <id> <material> <time> <priority>       - add a job")
         print("list                                         - list all the jobs in queue")
         print("completed                                    - list all the jobs completed")

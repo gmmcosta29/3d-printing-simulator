@@ -5,7 +5,7 @@ from models import JobRecord
 
 class ThreadSafePriorityQueue:
     """
-    ThreadSafe priority queue for managin printing jobs
+    ThreadSafe priority queue for managing printing jobs
     """
     def __init__(self):
         self._queue = asyncio.PriorityQueue()
