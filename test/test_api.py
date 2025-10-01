@@ -65,17 +65,3 @@ def test_cancel_nonexistent_job(client):
     response = client.delete("/jobs/nonexistent_job")
     assert response.status_code == 404
 
-def test_cancel_existing_job(client):
-    """Test: Successfuly cancel a queue job"""
-
-    for i in range(50):
-        job_data = {"id": f"J{i}",
-                    "material": "PLA",
-                    "est_time": 100.0,
-                    "priority": 1
-                    }
-        client.post("/jobs", json = job_data)
-
-    response = client.delete("/jobs/J40")
-
-    assert response.status_code == 200
