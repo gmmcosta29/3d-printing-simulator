@@ -43,7 +43,7 @@ class Simulator:
         return self._printers.copy()
     
     def cancel_job(self, job_id: str) -> bool:
-        """Cancel job by name """
+        """Cancel job by ID """
         return self._queue.cancel_job(job_id=job_id)
     
     def get_active_jobs(self) -> list[Job]:
@@ -51,7 +51,7 @@ class Simulator:
         return list(self._queue.get_active_jobs().values())
     
     def get_job_records(self) -> list[Job]:
-        """Return Jobs that are completed/canceled"""
+        """Return Jobs that are completed/cancelled"""
         return self._queue.get_job_records()
     
     def get_queue_stats(self) -> dict:
@@ -59,7 +59,7 @@ class Simulator:
         return{
             "active_jobs": len(self._queue.get_active_jobs()),
             "completed": sum(1 for r in records if r.status == "completed"),
-            "canceled": sum(1 for r in records if r.status == "canceled"),
+            "cancelled": sum(1 for r in records if r.status == "cancelled"),
             "total_processed": len(records)
         }
     
@@ -97,10 +97,10 @@ class Simulator:
         #printer utilization
         printer_utilization = []
         for printer in self._printers:
-            utiliziation = printer.get_utilization(total_sim_time)
+            utilization = printer.get_utilization(total_sim_time)
             printer_utilization.append({
                 "printer_id": printer.id,
-                "utilization_percent": utiliziation
+                "utilization_percent": utilization
             })
         return {
             "avg_wait_time": avg_wait,
@@ -141,8 +141,8 @@ class Simulator:
             except asyncio.TimeoutError:
                 continue
             except Exception as e:
-                logging.info(f"Printer {printer.id} as the  error:{e}")
-                print(f"Printer {printer.id} as the  error:{e}")
+                logging.info(f"Printer {printer.id} has the  error:{e}")
+                print(f"Printer {printer.id} has the  error:{e}")
 
         logging.info(f"Printer {printer.id} stopped")
         print(f"Printer {printer.id} stopped")
@@ -161,8 +161,8 @@ class Simulator:
         """Stops all the workers safely"""
         self._running = False
         await asyncio.gather(*self._workers_tasks, return_exceptions=True) # Waits for all threads even if they raise exceptions
-        print("All workers stoped")
-        logging.info("All workers stoped")
+        print("All workers stopped")
+        logging.info("All workers stopped")
         
         records = self._queue.get_job_records()
         sorted_records = sorted(records, key=lambda r: r.end_time) #sort records by the order they were concluded

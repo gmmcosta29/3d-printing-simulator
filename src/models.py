@@ -8,15 +8,15 @@ class JobStatus(Enum):
     QUEUE = "queue"
     RUNNING = "running"
     COMPLETED = "completed"
-    CANCELED = "canceled"
+    CANCELLED = "cancelled"
 
 @dataclass
 class Job:
     """
-    Represents a 3D priting Job
-    Atributtes:
+    Represents a 3D printing Job
+    Attributes:
         id: Job identifier
-        material: Material utilized make the job (PLA, ABS, PETG, etc)
+        material: Material utilized to make the job (PLA, ABS, PETG, etc)
         est_time: Estimated time in Seconds
         priority: Job priority
         created_at: Timestamp when the job was created
@@ -42,7 +42,7 @@ class Job:
     
     @property
     def wait_time(self) -> Optional[float]:
-        "Calculate the time waiting after start processing"
+        """Calculate the time before start processing"""
         if self.started_at is not None:
             return self.started_at - self.created_at
         return None
@@ -65,7 +65,7 @@ class Job:
     
     def cancel(self) -> None:
         """Cancel the Job"""
-        self.status = JobStatus.CANCELED
+        self.status = JobStatus.CANCELLED
         if self.finished_at is None:
             self.finished_at = time.time()
 
@@ -80,7 +80,7 @@ class PrioritizedJob:
     """
     priority: int
     counter: int 
-    job: Job = field(compare=False) #Dont compare the job object
+    job: Job = field(compare=False) #Don't compare the job object
 
 @dataclass
 class Printer:
@@ -134,7 +134,7 @@ class JobRecord:
     start_time: float # Timestamp of job initialization 
     created_time: float # Timestamp of creation
     end_time: float # Timestamp of job completion
-    duration: float # Diference betwen end_time and start time
+    duration: float # Diference between end_time and start time
     status: str # Job end status
     priority: int # Job priority
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     print(f"Created job: {job.id}")
     print(f"Job Material: {job.material}")
     print(f"Status: {job.status}")
-    print(f"Estimateed time job: {job.est_time}")
+    print(f"Estimated time job: {job.est_time}")
     print(f"Job Started at: {job.started_at}")
 
     job.start_processing()

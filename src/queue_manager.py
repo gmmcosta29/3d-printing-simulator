@@ -33,19 +33,19 @@ class ThreadSafePriorityQueue:
                 return job
                                 
     def get_job_records(self) -> list[Job]:
-        """Get for completed jobs"""
+        """Get completed jobs"""
         return self._job_records.copy()
     
     def get_active_jobs(self) -> dict[str,Job]:
-        """Get for queue jobs"""
+        """Get queue jobs"""
         return self._jobs.copy()
     
     def cancel_job(self, job_id: str) -> bool:
         """Cancel a job and update data objects
         
         Note: This is not async and doesnt use locks because its only called from single-thread context.
-        Potential race codition  between checking the job status and modifying it, is acceptable given the
-        current arquitecture where job state transition happen only in the async worker pool
+        Potential race condition  between checking the job status and modifying it, is acceptable given the
+        current architecture where job state transition happen only in the async worker pool
         """
 
         if job_id in self._jobs:

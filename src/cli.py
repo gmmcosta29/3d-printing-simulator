@@ -45,9 +45,9 @@ class CLI:
             print(f"Error: {e}")
     
     def cmd_completed(self) -> None:
-        """Print all the jobs Completed/Canceled"""
+        """Print all the jobs Completed/cancelled"""
 
-        print("\n Completed/Canceled jobs: ")
+        print("\n Completed/cancelled jobs: ")
         records = self.sim.get_job_records()
         records = sorted(records, key=lambda r:r.end_time)
         if not records:
@@ -84,9 +84,9 @@ class CLI:
         
         success = self.sim.cancel_job(args[0])
         if success:
-            print(f"Success canceling the job {args[0]}")
+            print(f"Successfully cancelled the job {args[0]}")
         else:
-            print(f"Was not possible to cancel {args[0]}")
+            print(f"Could not cancel {args[0]}")
 
     def cmd_records(self) -> None:
         """Shows global statistics"""
@@ -116,7 +116,7 @@ class CLI:
         print(f" Time Scale: {self.sim.time_scale}")
         print(f" Jobs in queue: {stats['active_jobs']}")
         print(f" Jobs Completed: {stats['completed']}")
-        print(f" Jobs Cancelled: {stats['canceled']}")
+        print(f" Jobs Cancelled: {stats['cancelled']}")
     
     async def run(self) -> None:
         """ Main CLI Loop"""
