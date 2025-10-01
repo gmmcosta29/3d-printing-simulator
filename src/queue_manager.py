@@ -41,7 +41,13 @@ class ThreadSafePriorityQueue:
         return self._jobs.copy()
     
     def cancel_job(self, job_id: str) -> bool:
-        """Cancel a job and update data objects"""
+        """Cancel a job and update data objects
+        
+        Note: This is not async and doesnt use locks because its only called from single-thread context.
+        Potential race codition  between checking the job status and modifying it, is acceptable given the
+        current arquitecture where job state transition happen only in the async worker pool
+        """
+
         if job_id in self._jobs:
             job = self._jobs[job_id]
             if job.status == JobStatus.RUNNING:
