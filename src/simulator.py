@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 from database import JobDatabase
 from visualizer import Visualizer
+from json_manager import generate_json_report
 
 log_dir = Path(__file__).parent.parent / "logs"
 log_dir.mkdir(exist_ok=True)
@@ -45,7 +46,7 @@ class Simulator:
         """Cancel job by name """
         return self._queue.cancel_job(job_id=job_id)
     
-    def get_active_jobss(self) -> list[Job]:
+    def get_active_jobs(self) -> list[Job]:
         """Returns a list of the active jobs"""
         return list(self._queue.get_active_jobs().values())
     
@@ -164,11 +165,15 @@ class Simulator:
         logging.info("All workers stoped")
         
         records = self._queue.get_job_records()
+        sorted(records, key=lambda r: r.end_time) #sort records by the order they were concluded
+        
         stats = self.get_global_stats()
-        sim_time = time.time() - self._start_time
-        logging.info(f"Saved {self._db.save_jobs(records=records, simulation_time=sim_time)} jobs to the database")
+        jobs_on_db = self._db.save_jobs(records=records, simulation_time=stats['total_simulation_time'])
+        logging.info(f"Saved {jobs_on_db} jobs to the database")
+
         plt = Visualizer()
         plt.plot_printer_utilization(stats=stats)
+        generate_json_report(records=records)
 
 async def basic_test():
 

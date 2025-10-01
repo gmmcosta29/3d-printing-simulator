@@ -1,6 +1,8 @@
 import asyncio
 from models import Job
 from simulator import Simulator
+import sys
+from json_manager import load_jobs_from_json
 
 class CLI:
     def __init__(self, simulator: Simulator):
@@ -157,13 +159,30 @@ class CLI:
                 print(f"Error: {e}")
 
 async def main():
-    sim = Simulator(num_printers=2, time_scale=0.1)
-    await sim.start()
+    if len(sys.argv) > 1:
+        """Process json file only"""
+        json_file = sys.argv[1]
+        sim = Simulator(num_printers=3, time_scale=0.1)
+        await sim.start()
 
-    cli = CLI(sim)
-    await cli.run()
+        jobs = load_jobs_from_json(json_file)
+        if jobs:
+            await sim.add_jobs(jobs)
+            print(f"Simulator running with {sim.num_printers} printers")
 
-    await sim.stop()
+            cli = CLI(sim)
+            await cli.run()
+
+        await sim.stop()
+    else:
+        """Process input data"""
+        sim = Simulator(num_printers=2, time_scale=0.1)
+        await sim.start()
+
+        cli = CLI(sim)
+        await cli.run()
+
+        await sim.stop()
 
 if __name__ == "__main__":
     asyncio.run(main())
