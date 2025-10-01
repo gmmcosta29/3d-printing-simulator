@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
+from datetime import datetime
 
 class Visualizer:
     """Create visualization of printer utilization"""
@@ -23,7 +24,9 @@ class Visualizer:
         plt.ylabel('Utilization %')
         plt.ylim(1,110)
         plt.tight_layout()
-
-        filepath = self.output_dir / 'printer_utilization.png'
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filepath = self.output_dir / f"printer_utilization{timestamp}.png"
+        
         plt.savefig(filepath,dpi = 150, bbox_inches= 'tight')
         plt.close()
