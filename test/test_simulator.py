@@ -87,12 +87,16 @@ async def test_load_balancing():
     await sim.stop()
 
     stats = sim.get_global_stats()
+    records = sorted(sim.get_job_records(), key= lambda x: x.end_time)
+    order = [r.job_id for r in records]
 
     assert stats['throughput'] > 2 # Expected is 3, but with over head and context switching give 1 of tolerance
     assert stats['total_completed'] == 12
 
     utilization = [p['utilization_percent'] for p  in stats['printer_utilization']]
     assert(all(u > 50 for u in utilization))
+    assert order == [f"J{i}" for i in range(12)] # Test FIFO
+
 
 @pytest.mark.asyncio
 async def test_mixed_priorities(two_printer_sim):
@@ -176,3 +180,8 @@ async def test_random_json_casetest(two_printer_sim):
     await asyncio.sleep(14.5) #264 total_time * 0.1 (time_scale) / 2  (printers)  = 13,2s + 1,3s tolerance
 
     assert len(sim.get_job_records()) == 10
+
+
+
+
+
