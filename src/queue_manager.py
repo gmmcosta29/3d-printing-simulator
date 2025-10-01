@@ -33,11 +33,11 @@ class ThreadSafePriorityQueue:
                 return job
                                 
     def get_job_records(self) -> list[Job]:
-        """Get for completed jobs"""
+        """Get completed jobs"""
         return self._job_records.copy()
     
     def get_active_jobs(self) -> dict[str,Job]:
-        """Get for queue jobs"""
+        """Get queue jobs"""
         return self._jobs.copy()
     
     def cancel_job(self, job_id: str) -> bool:
