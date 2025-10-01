@@ -1,6 +1,6 @@
 import sqlite3
 from pathlib import Path
-from queue_manager import JobRecord
+from models import JobRecord
 
 class JobDatabase:
     """Manages job history persistence"""

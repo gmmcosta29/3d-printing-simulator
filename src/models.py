@@ -13,7 +13,7 @@ class JobStatus(Enum):
 @dataclass
 class Job:
     """
-    Represents a 3d priting Job
+    Represents a 3D priting Job
     Atributtes:
         id: Job identifier
         material: Material utilized make the job (PLA, ABS, PETG, etc)
@@ -91,10 +91,10 @@ class Printer:
         current_job: Job currently being processed
         total_busy_time: Total time working
     """
+    
     id: int
     current_job: Optional[Job] = None
     total_busy_time: float = 0.0
-    start_job_time: float = 0.0
 
     @property
     def is_busy(self) -> bool:
@@ -112,7 +112,7 @@ class Printer:
         job = self.current_job
         job.completed_processing()
 
-        self.total_busy_time += time.time() - self.start_job_time
+        self.total_busy_time += time.time() - job.finished_at
         self.current_job = None
         return job
     
@@ -121,6 +121,20 @@ class Printer:
         if total_simulation_time <= 0:
             return 0.0
         return (self.total_busy_time / total_simulation_time) * 100
+    
+
+@dataclass
+class JobRecord:
+    """
+    Lightweight record of a completed job, only has the data needed for logs
+    """
+    job_id: str
+    start_time: float
+    created_time: float
+    end_time: float
+    duration: float
+    status: str
+    priority: int
 
 if __name__ == "__main__":
     #Test Job creating and processing
