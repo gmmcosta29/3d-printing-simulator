@@ -90,11 +90,13 @@ class Printer:
         id: Unique printer identifier
         current_job: Job currently being processed
         total_busy_time: Total time working
+        start_job_time: Time printer started to work
     """
     
     id: int
     current_job: Optional[Job] = None
     total_busy_time: float = 0.0
+    start_job_time: float = 0.0
 
     @property
     def is_busy(self) -> bool:
@@ -112,7 +114,7 @@ class Printer:
         job = self.current_job
         job.completed_processing()
 
-        self.total_busy_time += time.time() - job.finished_at
+        self.total_busy_time += time.time() - self.start_job_time
         self.current_job = None
         return job
     
