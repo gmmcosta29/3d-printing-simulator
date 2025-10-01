@@ -53,11 +53,11 @@ class CLI:
             return
         print("\nJob Records: ")
         print(f"ID      Priority        Duration        Status      Wait Time       RunTime")
-        print("-" * 50)
+        print("-" * 80)
         for record in records:
             print(f"{record.job_id}     {record.priority}       {record.duration:.3f}       {record.status}     {(record.start_time-record.created_time):.3f}      {(record.end_time -record.start_time):.3f}")
         print()
-        print("-" * 50)
+        print("-" * 80)
 
     def cmd_list(self) -> None:
         """Print all the jobs in queue"""
@@ -67,11 +67,11 @@ class CLI:
             return
         print("\nJob Records: ")
         print(f"ID      Material        Estimated Time        Status")
-        print("-" * 60)
+        print("-" * 50)
         for job in active_jobs:
             print(f"{job.id}     {job.material}       {job.est_time:.3f}       {job.status}")
         print()
-        print("-" * 60)
+        print("-" * 50)
     
     def cmd_cancel(self, args: list[str]) -> None:
         if len(args) != 1:
@@ -177,6 +177,7 @@ async def main():
     else:
         """Process input data"""
         sim = Simulator(num_printers=2, time_scale=0.1)
+        print(f"Simulator running with {sim.num_printers} printers")
         await sim.start()
 
         cli = CLI(sim)
