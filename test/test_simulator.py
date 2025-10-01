@@ -151,7 +151,7 @@ async def test_stats_no_jobs(one_printer_sim):
 @pytest.mark.asyncio
 async def test_bulk_processing():
     """Test: Simulator in bulk """
-    sim = Simulator(num_printers=3, time_scale=0.01)
+    sim = Simulator(num_printers=3, time_scale=0.1)
     
     jobs = [Job(f"J{i}", "PLA", 10, priority=1) for i in range(3000)]
 
