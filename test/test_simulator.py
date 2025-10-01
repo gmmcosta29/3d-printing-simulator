@@ -142,7 +142,7 @@ async def test_stats_no_jobs(one_printer_sim):
 
     assert records['active_jobs'] == 0
     assert records['completed'] == 0
-    assert records['canceled'] == 0
+    assert records['cancelled'] == 0
 
     assert stats['avg_wait_time'] == 0
     assert stats['median_wait_time'] == 0
@@ -208,7 +208,7 @@ async def test_cancelation(two_printer_sim):
 
     assert "J2" not in active_ids
     assert "J2" in record_ids
-    assert len([r for r in records if r.status == "canceled"]) == 1
+    assert len([r for r in records if r.status == "cancelled"]) == 1
 
 
 @pytest.mark.asyncio

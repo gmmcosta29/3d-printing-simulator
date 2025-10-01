@@ -111,7 +111,7 @@ async def health():
         "printers": sim.num_printers,
         "active_jobs": stats['active_jobs'],
         "completed": stats['completed'],
-        "canceled": stats['canceled'],
+        "cancelled": stats['cancelled'],
         "total_processed": stats['total_processed']
     }
 
@@ -123,5 +123,5 @@ async def cancel_job(job_id: str):
         logging.info(f"Error: Canceling {job_id} ")
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
-    logging.info(f"Job {job_id} canceled successfully")
+    logging.info(f"Job {job_id} cancelled successfully")
     return {"message": f"Job {job_id} cancelled"}
