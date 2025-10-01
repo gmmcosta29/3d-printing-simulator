@@ -1,22 +1,7 @@
 from models import Job, JobStatus, PrioritizedJob
 import asyncio
 from dataclasses import dataclass
-
-@dataclass
-class JobRecord:
-    """
-    Lightweight record of a completed job, only has the data needed for logs
-    """
-    job_id: str
-    start_time: float
-    created_time: float
-    end_time: float
-    duration: float
-    status: str
-    priority: int
-
-    
-
+from models import JobRecord
 
 class ThreadSafePriorityQueue:
     """

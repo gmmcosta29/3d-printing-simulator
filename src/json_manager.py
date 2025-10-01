@@ -1,6 +1,5 @@
 from pathlib import Path
-from queue_manager import JobRecord
-from models import Job
+from models import JobRecord,Job
 from datetime import datetime
 import json
 
