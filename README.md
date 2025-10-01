@@ -43,7 +43,6 @@ Wrapper class to ordering jobs by priority
 This ensures stable ordering.
 ##  
     1 - Priority 
-    ##
     2 - FIFO Counter (When the job was inserted in the FIFO list)
 
 ## Printer
