@@ -7,3 +7,7 @@ pytest-cov>=4.1.0
 
 #Visualization
 matplotlib >=3.7.0
+
+#Fast API
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
