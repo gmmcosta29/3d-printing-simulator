@@ -1,6 +1,9 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import datetime
+
 
 class Visualizer:
     """Create visualization of printer utilization"""
